@@ -25,7 +25,12 @@ THE SOFTWARE.
 """
 
 from collections import OrderedDict, Iterable
-from itertools import izip, takewhile, count, ifilter
+from itertools import takewhile, count
+try:
+    from itertools import izip, ifilter
+except ImportError: #Python3
+    izip = zip
+    ifilter = filter
 from datetime import datetime, timedelta
 import numpy as np
 from scipy.optimize import leastsq, fsolve
