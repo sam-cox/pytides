@@ -100,9 +100,9 @@ class Tide(object):
     def at(self, t):
         if isinstance(t, Iterable):
             #We'll do this a bit more sensibly soon
-            return np.ndarray([self.at(ti) for ti in t])
+            return np.array([self.at(ti)[0] for ti in t])
         speed,[u],[f],V0 = self.prepare(t, radians=True)
-        t = np.zeros(1)#self.hours(t)
+        t = np.zeros(1)
         amplitudes = self.model['amplitude'][:, np.newaxis]
         phases = d2r*self.model['phase'][:, np.newaxis]
         return Tide._tidal_series(t, amplitudes, phases, speed,u,f,V0)
