@@ -20,6 +20,8 @@ should do the trick.
 ####Usage
 Pytides is in its infancy, and hasn't yet been properly documented. The best way to get started would be to read [this example](https://github.com/sam-cox/pytides/wiki/Example-Pytides-Usage).
 
+If you want to know *how* Pytides works, it would be best to read *P. Schureman, Special Publication 98*. Alternatively, there is [my attempt](https://github.com/sam-cox/pytides/wiki/Theory-of-the-Harmonic-Model-of-Tides) to explain it on the wiki (although it's a little mathematical and not yet complete).
+It is certainly possible to use Pytides successfully without any knowledge of its methods.
 ####Contribution
 I would welcome any help with Pytides. Particularly if you have knowledge of constituent data (including node factors) which other institutions/packages use. I can be reached at sam.cox@cantab.net or via github.
 
