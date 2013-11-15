@@ -5,7 +5,9 @@ Pytides is small Python package for the analysis and prediction of tides. Pytide
 
 It is recommended that all interactions with pytides which require times to be specified are in the format of naive UTC datetime instances. In particular, note that pytides makes no adjustment for summertime or any other civil variations within timezones.
 
-
+####Requirements
+* Numpy
+* Scipy
 
 ####Installation
 
