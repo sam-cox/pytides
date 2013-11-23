@@ -91,7 +91,7 @@ class CompoundConstituent(BaseConstituent):
 
 ###### Base Constituents
 #Long Term
-_Zo    = BaseConstituent(name = 'Zo',     xdo = 'Z ZZZ ZZZ', u = nc.u_zero, f = nc.f_unity)
+_Z0    = BaseConstituent(name = 'Z0',     xdo = 'Z ZZZ ZZZ', u = nc.u_zero, f = nc.f_unity)
 _Sa    = BaseConstituent(name = 'Sa',     xdo = 'Z ZAZ ZZZ', u = nc.u_zero, f = nc.f_unity)
 _Ssa   = BaseConstituent(name = 'Ssa',    xdo = 'Z ZBZ ZZZ', u = nc.u_zero, f = nc.f_unity)
 _Mm    = BaseConstituent(name = 'Mm',     xdo = 'Z AZY ZZZ', u = nc.u_zero, f = nc.f_Mm)
