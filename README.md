@@ -20,7 +20,7 @@ or
 should do the trick.
 
 ####Usage
-Pytides is in its infancy, and hasn't yet been properly documented. The best way to get started would be to read [this example](https://github.com/sam-cox/pytides/wiki/Example-Pytides-Usage).
+Pytides is in its infancy, and hasn't yet been fully documented. The best way to get started would be to read [this example](https://github.com/sam-cox/pytides/wiki/Example-Pytides-Usage).
 After that, you might try [making your own tide table](https://github.com/sam-cox/pytides/wiki/How-to-make-your-own-Tide-Table-using-Python-and-Pytides), where you can also find a method for handling timezones.
 You can find information about using NOAA published Harmonic Constituents directly [here](https://github.com/sam-cox/pytides/wiki/How-to-use-the-NOAA%27s-published-Harmonic-Constituents-in-Python-with-Pytides).
 
