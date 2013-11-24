@@ -47,7 +47,15 @@ class Tide(object):
 
     def __init__(self, constituents = None, amplitudes = None, phases = None,
                  model = None, radians = False):
-        """Initialise a tidal model. """
+        """
+        Initialise a tidal model. Provide constituents, amplitudes and phases OR a model.
+        Arguments:
+        constituents -- list of constituents used in the model.
+        amplitudes -- list of amplitudes corresponding to constituents
+        phases -- list of phases corresponding to constituents
+        model -- an ndarray of type Tide.dtype representing the constituents, amplitudes and phases.
+        radians -- boolean representing whether phases are in radians (default False)
+        """
         if None not in [constituents, amplitudes, phases]:
             if len(constituents) == len(amplitudes) == len(phases):
                 model = np.zeros(len(phases), dtype=Tide.dtype)
@@ -67,10 +75,19 @@ class Tide(object):
         self.normalize()
     
     def prepare(self, *args, **kwargs):
+
         return Tide._prepare(self.model['constituent'], *args, **kwargs)
 
     @staticmethod 
     def _prepare(constituents, t0, t = None, radians = True):
+        """
+        Return constituent speed and equilibrium argument at a given time, and constituent node factors at given times.
+        Arguments:
+        constituents -- list of constituents to prepare
+        t0 -- time at which to evaluate speed and equilibrium argument for each constituent
+        t -- list of times at which to evaluate node factors for each constituent (default: t0)
+        radians -- whether to return the angular arguments in radians or degrees (default: True)
+        """
         #The equilibrium argument is constant and taken at the beginning of the time series (t0).
         #The speed of the equilibrium argument changes very slowly, so again we take it to be constant
         #over any length of data. The node factors change more rapidly.
@@ -98,6 +115,11 @@ class Tide(object):
         return speed, u, f, V0
          
     def at(self, t):
+        """
+        Return the modelled tidal height at given times.
+        Arguments:
+        t -- array of times at which to evaluate the tidal height
+        """
         t0 = t[0]
         hours = self._hours(t0, t)
         partition = 240.0
@@ -109,19 +131,35 @@ class Tide(object):
         return np.concatenate([Tide._tidal_series(t_i, H, p, speed, u_i, f_i, V0) for t_i, u_i, f_i in izip(t, u, f)])
     
     def highs(self, *args):
+        """
+        Generator yielding only the high tides.
+        Arguments:
+        see Tide.extrema()
+        """
         for t in ifilter(lambda e: e[2] == 'H', self.extrema(*args)):
             yield t
             
     def lows(self, *args):
+        """
+        Generator yielding only the low tides.
+        Arguments:
+        see Tide.extrema()
+        """
         for t in ifilter(lambda e: e[2] == 'L', self.extrema(*args)):
             yield t
     
     def form_number(self):
+        """
+        Returns the model's form number, a helpful heuristic for classifying tides.
+        """
         k1, o1, m2, s2 = (np.extract(self.model['constituent'] == c, self.model['amplitude']) for c
                           in [constituent._K1, constituent._O1, constituent._M2, constituent._S2])
         return (k1+o1)/(m2+s2)
     
     def classify(self):
+        """
+        Classify the tide according to its form number
+        """
         form = self.form_number()
         if 0 <= form <= 0.25:
             return 'semidiurnal'
@@ -133,6 +171,13 @@ class Tide(object):
             return 'diurnal'
         
     def extrema(self, t0, t1 = None, partition = 2400.0):
+        """
+        A generator for high and low tides.
+        Arguments:
+        t0 -- time after which extrema are sought
+        t1 -- optional time before which extrema are sought (if not given, the generator is infinite)
+        partition -- number of hours for which we consider the node factors to be constant (default: 2400.0)
+        """
         if t1:
             #yield from in python 3.4
             for e in takewhile(lambda t: t[0] < t1, self.extrema(t0)):
@@ -169,6 +214,12 @@ class Tide(object):
     
     @staticmethod
     def _hours(t0, t):
+        """
+        Return the hourly offset(s) of a (list of) time from a given time.
+        Arguments:
+        t0 -- time from which offsets are sought
+        t -- times to find hourly offsets from t0.
+        """
         if not isinstance(t, Iterable):
             return Tide._hours(t0, [t])[0]
         elif isinstance(t[0], datetime):
@@ -178,6 +229,12 @@ class Tide(object):
         
     @staticmethod
     def _partition(hours, partition = 3600.0):
+        """
+        Partition a sorted list of numbers (or in this case hours).
+        Arguments:
+        hours -- sorted ndarray of hours.
+        partition -- maximum partition length (default: 3600.0)
+        """
         partition = float(partition)
         relative = hours - hours[0]
         total_partitions = np.ceil(relative[-1] / partition + 10*np.finfo(np.float).eps).astype('int')
@@ -185,20 +242,27 @@ class Tide(object):
     
     @staticmethod
     def _times(t0, hours):
+        """
+        Return a (list of) datetime(s) given an initial time and an (list of) hourly offset(s).
+        Arguments:
+        t0 -- initial time
+        hours -- hourly offsets from t0
+        """
         if not isinstance(hours, Iterable):
             return Tide._times(t0, [hours])[0]
         elif not isinstance(hours[0], datetime):
             return np.array([t0 + timedelta(hours=h) for h in hours])
         else:
             return np.array(hours)
-    ##Return the modelled heights for given times
-    ##t is of shape (nt,); all other arguments are of shape (nc, 1)
+        
     @staticmethod
     def _tidal_series(t, amplitude, phase, speed, u, f, V0):     
         return np.sum(amplitude*f*np.cos(speed*t + (V0 + u) - phase), axis=0)
     
-    #By convention amplitudes, phases are positive
     def normalize(self):
+        """
+        Adapt self.model so that amplitudes are positive and phases are in [0,360) as per convention
+        """
         for i, (_, amplitude, phase) in enumerate(self.model):
             if amplitude < 0:
                 self.model['amplitude'][i] = -amplitude
@@ -207,6 +271,20 @@ class Tide(object):
 
     @classmethod
     def decompose(cls, heights, t = None, t0 = None, interval=None, constituents=constituent.noaa, initial = None, n_period = 2, callback = None, full_output = False):
+        """
+        Return an instance of Tide which has been fitted to a series of tidal observations.
+        Arguments:
+        It is not necessary to provide t0 or interval if t is provided.
+        heights -- ndarray of tidal observation heights
+        t -- ndarray of tidal observation times
+        t0 -- datetime representing the time at which heights[0] was recorded
+        interval -- hourly interval between readings
+        constituents -- list of constituents to use in the fit (default: constituent.noaa)
+        initial -- optional Tide instance to use as first guess for least squares solver
+        n_period -- only include constituents which complete at least this many periods (default: 2)
+        callback -- optional function to be called at each iteration of the solver
+        full_output -- whether to return the output of scipy's leastsq solver (default: False)
+        """
         if t is not None:
             if isinstance(t[0], datetime):
                 hours = Tide._hours(t[0], t)
