@@ -98,21 +98,22 @@ class Tide(object):
         return speed, u, f, V0
          
     def at(self, t):
-        if isinstance(t, Iterable):
-            #We'll do this a bit more sensibly soon
-            return np.array([self.at(ti)[0] for ti in t])
-        speed,[u],[f],V0 = self.prepare(t, radians=True)
-        t = np.zeros(1)
-        amplitudes = self.model['amplitude'][:, np.newaxis]
-        phases = d2r*self.model['phase'][:, np.newaxis]
-        return Tide._tidal_series(t, amplitudes, phases, speed,u,f,V0)
+        t0 = t[0]
+        hours = self._hours(t0, t)
+        partition = 240.0
+        t = self._partition(hours, partition)
+        times = self._times(t0, [(i + 0.5)*partition for i in range(len(t))])
+        speed, u, f, V0 = self.prepare(t0, times, radians = True)
+        H = self.model['amplitude'][:, np.newaxis]
+        p = d2r*self.model['phase'][:, np.newaxis]
+        return np.concatenate([Tide._tidal_series(t_i, H, p, speed, u_i, f_i, V0) for t_i, u_i, f_i in izip(t, u, f)])
     
-    def highs(self, args):
+    def highs(self, *args):
         for t in ifilter(lambda e: e[2] == 'H', self.extrema(*args)):
             yield t
             
-    def lows(self, args):
-        for t in ifilter(lambda e: e[2] == 'H', self.extrema(*args)):
+    def lows(self, *args):
+        for t in ifilter(lambda e: e[2] == 'L', self.extrema(*args)):
             yield t
     
     def form_number(self):
@@ -137,15 +138,17 @@ class Tide(object):
             for e in takewhile(lambda t: t[0] < t1, self.extrema(t0)):
                 yield e
         else:
+            #We assume that extrema are separated by at least delta hours
             delta = np.amin([90.0 / c.speed(astro(t0)) for c in self.model['constituent'] if not c.speed(astro(t0)) == 0])
             #We search for stationary points from offset hours before t0 to ensure we find any which
             #might occur very soon after t0.
             offset = 24.0
-            amplitude = self.model['amplitude'][:, np.newaxis]
-            phase = d2r*self.model['phase'][:, np.newaxis]
             partitions = (Tide._times(t0, i*partition) for i in count()), (Tide._times(t0, i*partition) for i in count(1))
             #We'll overestimate to be on the safe side; values outside (start,end) won't get yielded.
             interval_count = int(np.ceil((partition + offset) / delta)) + 1
+            amplitude = self.model['amplitude'][:, np.newaxis]
+            phase = d2r*self.model['phase'][:, np.newaxis]
+
             for start, end in izip(*partitions):
                 speed, [u], [f], V0 = self.prepare(start, Tide._times(start, 0.5*partition))
                 # These derivatives don't include the time dependence of u or f, but these change slowly.
@@ -159,7 +162,7 @@ class Tide(object):
                     if d(a)*d(b) < 0:
                         extrema = fsolve(d, (a + b) / 2.0, fprime = d2)[0]
                         time = Tide._times(start, extrema)
-                        height = self.at(time)
+                        [height] = self.at([time])
                         type = 'H' if d2(extrema) < 0 else 'L'
                         if start < time < end:
                             yield (time, height, type)
@@ -221,7 +224,7 @@ class Tide(object):
         constituents = list(OrderedDict.fromkeys(constituents))
 
         #No need for least squares to find the mean water level constituent z0, work relative to mean
-        constituents = [c for c in constituents if not c == constituent._Zo]
+        constituents = [c for c in constituents if not c == constituent._Z0]
         z0 = np.mean(heights)
         heights = heights - z0
 
@@ -277,7 +280,7 @@ class Tide(object):
         lsq = leastsq(residual, initial, Dfun=D_residual, col_deriv=True, ftol=1e-7) # 
 
         model = np.zeros(1+n, dtype=cls.dtype)
-        model[0] = (constituent._Zo, z0, 0)
+        model[0] = (constituent._Z0, z0, 0)
         model[1:]['constituent'] = constituents[:]
         model[1:]['amplitude'] = lsq[0][:n]
         model[1:]['phase'] = lsq[0][n:]
