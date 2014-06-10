@@ -1,0 +1,8 @@
+# pip installer
+*.egg-info
+
+# vim
+.*.swp
+
+# python
+*.pyc
