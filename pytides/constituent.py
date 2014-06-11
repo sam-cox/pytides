@@ -31,7 +31,7 @@ class BaseConstituent(object):
                 if l in string.ascii_letters]
 
     def coefficients_to_xdo(self, coefficients):
-        return ''.join([self.int_xdo[c] for c in cooefficients])
+        return ''.join([self.int_xdo[c] for c in coefficients])
 
     def V(self, astro):
         return np.dot(self.coefficients, self.astro_values(astro))
