@@ -1,4 +1,4 @@
-
+import abc
 import string
 import operator as op
 import numpy as np
@@ -47,24 +47,26 @@ def coefficients_to_xdo(coefficients):
 
 
 class BaseConstituent(object):
-    def __init__(self, name, xdo='', coefficients=[],
-                 u=nc.u_zero, f=nc.f_unity):
-        if xdo == '':
-            self.coefficients = np.array(coefficients)
-        else:
-            self.coefficients = np.array(xdo_to_coefficients(xdo))
-        self.name = name
-        self.u = u
-        self.f = f
+    __metaclass__ = abc.ABCMeta
 
+    @abc.abstractmethod
+    def speed(self, astro):
+        pass
+
+    @abc.abstractmethod
     def V(self, astro):
-        return np.dot(self.coefficients, self.astro_values(astro))
+        pass
 
-    def xdo(self):
-        return coefficients_to_xdo(self.coefficients)
+    @abc.abstractmethod
+    def u(self, astro):
+        pass
 
-    def speed(self, a):
-        return np.dot(self.coefficients, self.astro_speeds(a))
+    @abc.abstractmethod
+    def f(self, astro):
+        pass
+
+    def __init__(self, name):
+        self.name = name
 
     def astro_xdo(self, a):
         return [a['T+h-s'], a['s'], a['h'], a['p'], a['N'], a['pp'], a['90']]
@@ -84,17 +86,37 @@ class BaseConstituent(object):
         return hash(tuple(self.coefficients[:-1]))
 
 
+class Constituent(BaseConstituent):
+    """
+    An elementary constituent is fundamental, having its own individual u
+    and f functions.
+    """
+    def __init__(self, name, xdo, u=nc.u_zero, f=nc.f_unity):
+        super(Constituent, self).__init__(name)
+        self.coefficients = np.array(xdo_to_coefficients(xdo))
+        self.u_function = u
+        self.f_function = f
+
+    def speed(self, a):
+        return np.dot(self.coefficients, self.astro_speeds(a))
+
+    def V(self, astro):
+        return np.dot(self.coefficients, self.astro_values(astro))
+
+    def u(self, astro):
+        return self.u_function(astro)
+
+    def f(self, astro):
+        return self.f_function(astro)
+
+    def xdo(self):
+        return coefficients_to_xdo(self.coefficients)
+
+
 class CompoundConstituent(BaseConstituent):
-
-    def __init__(self, members=[], **kwargs):
+    def __init__(self, name, members):
+        super(CompoundConstituent, self).__init__(name)
         self.members = members
-
-        if 'u' not in kwargs:
-            kwargs['u'] = self.u
-        if 'f' not in kwargs:
-            kwargs['f'] = self.f
-
-        super(CompoundConstituent, self).__init__(**kwargs)
 
         self.coefficients = reduce(
             op.add,
@@ -112,47 +134,47 @@ class CompoundConstituent(BaseConstituent):
     def f(self, a):
         return reduce(op.mul, [c.f(a) ** abs(n) for (c, n) in self.members])
 
-# ## ## # Base Constituents
+# ## ## # Constituents
 # Long Term
-_Z0 = BaseConstituent(name='Z0',  xdo='Z ZZZ ZZZ', u=nc.u_zero, f=nc.f_unity)
-_Sa = BaseConstituent(name='Sa',  xdo='Z ZAZ ZZZ', u=nc.u_zero, f=nc.f_unity)
-_Ssa = BaseConstituent(name='Ssa', xdo='Z ZBZ ZZZ', u=nc.u_zero, f=nc.f_unity)
-_Mm = BaseConstituent(name='Mm',  xdo='Z AZY ZZZ', u=nc.u_zero, f=nc.f_Mm)
-_Mf = BaseConstituent(name='Mf',  xdo='Z BZZ ZZZ', u=nc.u_Mf, f=nc.f_Mf)
+_Z0 = Constituent(name='Z0',  xdo='Z ZZZ ZZZ', u=nc.u_zero, f=nc.f_unity)
+_Sa = Constituent(name='Sa',  xdo='Z ZAZ ZZZ', u=nc.u_zero, f=nc.f_unity)
+_Ssa = Constituent(name='Ssa', xdo='Z ZBZ ZZZ', u=nc.u_zero, f=nc.f_unity)
+_Mm = Constituent(name='Mm',  xdo='Z AZY ZZZ', u=nc.u_zero, f=nc.f_Mm)
+_Mf = Constituent(name='Mf',  xdo='Z BZZ ZZZ', u=nc.u_Mf, f=nc.f_Mf)
 
 # Diurnals
-_Q1 = BaseConstituent(name='Q1',      xdo='A XZA ZZA', u=nc.u_O1, f=nc.f_O1)
-_O1 = BaseConstituent(name='O1',      xdo='A YZZ ZZA', u=nc.u_O1, f=nc.f_O1)
-_K1 = BaseConstituent(name='K1',      xdo='A AZZ ZZY', u=nc.u_K1, f=nc.f_K1)
-_J1 = BaseConstituent(name='J1',      xdo='A BZY ZZY', u=nc.u_J1, f=nc.f_J1)
+_Q1 = Constituent(name='Q1',      xdo='A XZA ZZA', u=nc.u_O1, f=nc.f_O1)
+_O1 = Constituent(name='O1',      xdo='A YZZ ZZA', u=nc.u_O1, f=nc.f_O1)
+_K1 = Constituent(name='K1',      xdo='A AZZ ZZY', u=nc.u_K1, f=nc.f_K1)
+_J1 = Constituent(name='J1',      xdo='A BZY ZZY', u=nc.u_J1, f=nc.f_J1)
 
 # M1 is a tricky business for reasons of convention, rather than theory.  The
 # reasons for this are best summarised by Schureman paragraphs 126, 127 and in
 # the comments found in congen_input.txt of xtides, so I won't go over all this
 # again here.
 
-_M1 = BaseConstituent(name='M1',   xdo='A ZZZ ZZA', u=nc.u_M1, f=nc.f_M1)
-_P1 = BaseConstituent(name='P1',   xdo='A AXZ ZZA', u=nc.u_zero, f=nc.f_unity)
-_S1 = BaseConstituent(name='S1',   xdo='A AYZ ZZZ', u=nc.u_zero, f=nc.f_unity)
-_OO1 = BaseConstituent(name='OO1', xdo='A CZZ ZZY', u=nc.u_OO1, f=nc.f_OO1)
+_M1 = Constituent(name='M1',   xdo='A ZZZ ZZA', u=nc.u_M1, f=nc.f_M1)
+_P1 = Constituent(name='P1',   xdo='A AXZ ZZA', u=nc.u_zero, f=nc.f_unity)
+_S1 = Constituent(name='S1',   xdo='A AYZ ZZZ', u=nc.u_zero, f=nc.f_unity)
+_OO1 = Constituent(name='OO1', xdo='A CZZ ZZY', u=nc.u_OO1, f=nc.f_OO1)
 
 # Semi-Diurnals
-_2N2 = BaseConstituent(name='2N2', xdo='B XZB ZZZ', u=nc.u_M2, f=nc.f_M2)
-_N2 = BaseConstituent(name='N2',   xdo='B YZA ZZZ', u=nc.u_M2, f=nc.f_M2)
-_nu2 = BaseConstituent(name='nu2', xdo='B YBY ZZZ', u=nc.u_M2, f=nc.f_M2)
-_M2 = BaseConstituent(name='M2',   xdo='B ZZZ ZZZ', u=nc.u_M2, f=nc.f_M2)
-_lambda2 = BaseConstituent(name='lambda2', xdo='B AXA ZZB',
-                           u=nc.u_M2, f=nc.f_M2)
-_L2 = BaseConstituent(name='L2',   xdo='B AZY ZZB', u=nc.u_L2, f=nc.f_L2)
-_T2 = BaseConstituent(name='T2',   xdo='B BWZ ZAZ', u=nc.u_zero, f=nc.f_unity)
-_S2 = BaseConstituent(name='S2',   xdo='B BXZ ZZZ', u=nc.u_zero, f=nc.f_unity)
-_R2 = BaseConstituent(name='R2',   xdo='B BYZ ZYB', u=nc.u_zero, f=nc.f_unity)
-_K2 = BaseConstituent(name='K2',   xdo='B BZZ ZZZ', u=nc.u_K2, f=nc.f_K2)
+_2N2 = Constituent(name='2N2', xdo='B XZB ZZZ', u=nc.u_M2, f=nc.f_M2)
+_N2 = Constituent(name='N2',   xdo='B YZA ZZZ', u=nc.u_M2, f=nc.f_M2)
+_nu2 = Constituent(name='nu2', xdo='B YBY ZZZ', u=nc.u_M2, f=nc.f_M2)
+_M2 = Constituent(name='M2',   xdo='B ZZZ ZZZ', u=nc.u_M2, f=nc.f_M2)
+_lambda2 = Constituent(name='lambda2', xdo='B AXA ZZB',
+                       u=nc.u_M2, f=nc.f_M2)
+_L2 = Constituent(name='L2',   xdo='B AZY ZZB', u=nc.u_L2, f=nc.f_L2)
+_T2 = Constituent(name='T2',   xdo='B BWZ ZAZ', u=nc.u_zero, f=nc.f_unity)
+_S2 = Constituent(name='S2',   xdo='B BXZ ZZZ', u=nc.u_zero, f=nc.f_unity)
+_R2 = Constituent(name='R2',   xdo='B BYZ ZYB', u=nc.u_zero, f=nc.f_unity)
+_K2 = Constituent(name='K2',   xdo='B BZZ ZZZ', u=nc.u_K2, f=nc.f_K2)
 
 # Third-Diurnals
-_M3 = BaseConstituent(name='M3', xdo='C ZZZ ZZZ',
-                      u=lambda a: nc.u_Modd(a, 3),
-                      f=lambda a: nc.f_Modd(a, 3))
+_M3 = Constituent(name='M3', xdo='C ZZZ ZZZ',
+                  u=lambda a: nc.u_Modd(a, 3),
+                  f=lambda a: nc.f_Modd(a, 3))
 
 # ## ## # Compound Constituents
 # Long Term
