@@ -7,6 +7,14 @@ from ..nodal_corrections import (
     u_Mf, u_O1, u_K1, u_J1, u_M1, u_M2, u_OO1, u_L2, u_K2)
 
 
+def get_constituent(name):
+    return CONSTITUENTS[name]
+
+
+def get_constituent_set(name):
+    return CONSTITUENT_SETS[name]
+
+
 # ## ## # Constituents
 # Long Term
 _Z0 = Constituent(name='Z0',  xdo='Z ZZZ ZZZ', u=u_zero, f=f_unity)
@@ -86,3 +94,48 @@ noaa = [
     _rho1, _Q1, _T2, _R2, _2Q1, _P1, _2SM2, _M3, _L2, _2MK3, _K2,
     _M8, _MS4
 ]
+
+CONSTITUENTS = {
+    'Z0': _Z0,
+    'Sa': _Sa,
+    'Ssa': _Ssa,
+    'Mm': _Mm,
+    'Mf': _Mf,
+    'Q1': _Q1,
+    'O1': _O1,
+    'K1': _K1,
+    'J1': _J1,
+    'M1': _M1,
+    'P1': _P1,
+    'S1': _S1,
+    'OO1': _OO1,
+    '2N2': _2N2,
+    'N2': _N2,
+    'nu2': _nu2,
+    'M2': _M2,
+    'lambda2': _lambda2,
+    'L2': _L2,
+    'T2': _T2,
+    'S2': _S2,
+    'R2': _R2,
+    'K2': _K2,
+    'M3': _M3,
+    'MSF': _MSF,
+    '2Q1': _2Q1,
+    'rho1': _rho1,
+    'mu2': _mu2,
+    '2SM2': _2SM2,
+    '2MK3': _2MK3,
+    'MK3': _MK3,
+    'MN4': _MN4,
+    'M4': _M4,
+    'MS4': _MS4,
+    'S4': _S4,
+    'M6': _M6,
+    'S6': _S6,
+    'M8': _M8,
+}
+
+CONSTITUENT_SETS = {
+    'NOAA': noaa,
+}
