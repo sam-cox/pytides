@@ -61,6 +61,29 @@ class Tide(object):
         self.model = model[:]
         self.normalize()
 
+    def serialize(self):
+        constituents = [{'constituent': c, 'amplitude': a, 'phase': p}
+                        for c, a, p in self.model]
+        return {
+            '__type__': 'pytides.Tide',
+            'constituents': constituents,
+        }
+
+    @staticmethod
+    def deserialize(dictionary):
+        def decode_constituents(constituent_dictionaries):
+            for c_dict in constituent_dictionaries:
+                yield (
+                    c_dict['constituent'],
+                    c_dict['amplitude'],
+                    c_dict['phase'])
+
+        model = np.array(
+            list(decode_constituents(dictionary['constituents'])),
+            dtype=Tide.dtype)
+
+        return Tide(model=model)  # TODO: radians..?
+
     def prepare(self, *args, **kwargs):
         return Tide._prepare(self.model['constituent'], *args, **kwargs)
 

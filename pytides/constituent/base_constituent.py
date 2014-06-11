@@ -1,5 +1,4 @@
 import abc
-import string
 import numpy as np
 
 
@@ -41,3 +40,14 @@ class BaseConstituent(object):
 
     def __hash__(self):
         return hash(tuple(self.coefficients[:-1]))
+
+    def serialize(self):
+        return {
+            '__type__': 'pytides.Constituent',
+            'name': self.name,
+        }
+
+    @staticmethod
+    def deserialize(dictionary):
+        from pytides.constituent import get_constituent
+        return get_constituent(dictionary['name'])
