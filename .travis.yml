@@ -1,0 +1,18 @@
+language: python
+python:
+  - 2.7
+  - 3.2
+matrix:
+  fast_finish: true
+  allow_failures:
+    - python: 3.2
+virtualenv:
+  system_site_packages: true
+before_install:
+  - sudo apt-get install -qq python-numpy python-scipy python3-numpy python3-scipy
+install: 
+  -  LAPACK=/usr/lib/liblapack.so ATLAS=/usr/lib/libatlas.so BLAS=/usr/lib/libblas.so pip install -r requirements_for_travis.txt
+script:
+  - ./run_tests.sh
+notifications:
+  email: false
