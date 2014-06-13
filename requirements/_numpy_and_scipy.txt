@@ -1,0 +1,5 @@
+# These are broken out because Travis CI needs to use the system-wide packages
+# rather than installing them into the virtualenv.
+
+scipy==0.14.0
+numpy==1.8.1

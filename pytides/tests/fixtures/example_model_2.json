@@ -1,0 +1,301 @@
+{
+   "constituents": [
+      {
+         "phase": 0.0, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "Z0"
+         }, 
+         "amplitude": 1.4305925546448051
+      }, 
+      {
+         "phase": 59.095631357160798, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "M2"
+         }, 
+         "amplitude": 0.16808667446871028
+      }, 
+      {
+         "phase": 49.286918508629647, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "S2"
+         }, 
+         "amplitude": 0.052981912100274607
+      }, 
+      {
+         "phase": 49.382047120362721, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "N2"
+         }, 
+         "amplitude": 0.030058464728969947
+      }, 
+      {
+         "phase": 226.48786003721318, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "K1"
+         }, 
+         "amplitude": 0.14843030453856215
+      }, 
+      {
+         "phase": 154.33457926685668, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "M4"
+         }, 
+         "amplitude": 0.0023192561517715359
+      }, 
+      {
+         "phase": 215.0859306449513, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "O1"
+         }, 
+         "amplitude": 0.081961454407088158
+      }, 
+      {
+         "phase": 320.3505632460392, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "M6"
+         }, 
+         "amplitude": 0.00026823864072782791
+      }, 
+      {
+         "phase": 22.157087848428187, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "MK3"
+         }, 
+         "amplitude": 0.00083064343678966026
+      }, 
+      {
+         "phase": 215.49737328159853, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "S4"
+         }, 
+         "amplitude": 0.0005496647544177615
+      }, 
+      {
+         "phase": 120.82670378244299, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "MN4"
+         }, 
+         "amplitude": 0.0014451394470961702
+      }, 
+      {
+         "phase": 65.72336962214132, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "nu2"
+         }, 
+         "amplitude": 0.007985881676374167
+      }, 
+      {
+         "phase": 213.48592526048796, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "S6"
+         }, 
+         "amplitude": 0.00048943239958380012
+      }, 
+      {
+         "phase": 3.3685156140451094, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "mu2"
+         }, 
+         "amplitude": 0.0038508541230891607
+      }, 
+      {
+         "phase": 30.501955723850362, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "2N2"
+         }, 
+         "amplitude": 0.0034190941562195435
+      }, 
+      {
+         "phase": 252.81235980577634, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "OO1"
+         }, 
+         "amplitude": 0.0053278033656805387
+      }, 
+      {
+         "phase": 90.179228093337485, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "lambda2"
+         }, 
+         "amplitude": 0.0020626752164770281
+      }, 
+      {
+         "phase": 258.56718880015671, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "S1"
+         }, 
+         "amplitude": 0.00073481481282254416
+      }, 
+      {
+         "phase": 53.384579126524741, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "M1"
+         }, 
+         "amplitude": 0.0025854834555217696
+      }, 
+      {
+         "phase": 234.24593699427294, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "J1"
+         }, 
+         "amplitude": 0.0099761605874078372
+      }, 
+      {
+         "phase": 65.423966110012358, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "Mm"
+         }, 
+         "amplitude": 0.005628082041489779
+      }, 
+      {
+         "phase": 1.113937513263956, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "Ssa"
+         }, 
+         "amplitude": 0.0057463181507544491
+      }, 
+      {
+         "phase": 346.71360077080709, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "MSF"
+         }, 
+         "amplitude": 0.0064703505756040095
+      }, 
+      {
+         "phase": 55.10757675146548, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "Mf"
+         }, 
+         "amplitude": 0.010181845929712469
+      }, 
+      {
+         "phase": 205.04407383348013, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "rho1"
+         }, 
+         "amplitude": 0.0023196338786496706
+      }, 
+      {
+         "phase": 208.36107551704904, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "Q1"
+         }, 
+         "amplitude": 0.01252470971526721
+      }, 
+      {
+         "phase": 35.846255151703737, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "T2"
+         }, 
+         "amplitude": 0.0021347417153052325
+      }, 
+      {
+         "phase": 99.322552092472151, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "R2"
+         }, 
+         "amplitude": 0.00058856555135187527
+      }, 
+      {
+         "phase": 226.9861623286605, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "2Q1"
+         }, 
+         "amplitude": 0.0011339025165413041
+      }, 
+      {
+         "phase": 221.62726547717841, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "P1"
+         }, 
+         "amplitude": 0.045037800733418142
+      }, 
+      {
+         "phase": 265.69752751212104, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "2SM2"
+         }, 
+         "amplitude": 0.00054991402782917059
+      }, 
+      {
+         "phase": 183.14588308224575, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "M3"
+         }, 
+         "amplitude": 0.0012122388172413478
+      }, 
+      {
+         "phase": 59.025810671561899, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "L2"
+         }, 
+         "amplitude": 0.0044621897169185879
+      }, 
+      {
+         "phase": 261.15373772580341, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "2MK3"
+         }, 
+         "amplitude": 0.00026166946689712981
+      }, 
+      {
+         "phase": 42.123735099384632, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "K2"
+         }, 
+         "amplitude": 0.014010720779105148
+      }, 
+      {
+         "phase": 324.50593309695887, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "M8"
+         }, 
+         "amplitude": 0.00025319353330594365
+      }, 
+      {
+         "phase": 102.49613396668529, 
+         "constituent": {
+            "__type__": "pytides.Constituent", 
+            "name": "MS4"
+         }, 
+         "amplitude": 0.00062807226134257673
+      }
+   ], 
+   "__type__": "pytides.Tide"
+}
