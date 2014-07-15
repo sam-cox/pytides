@@ -9,8 +9,8 @@ except ImportError: #Python3
 from datetime import datetime, timedelta
 import numpy as np
 from scipy.optimize import leastsq, fsolve
-from astro import astro
-import constituent
+from .astro import astro
+from . import constituent
 
 d2r, r2d = np.pi/180.0, 180.0/np.pi
 
