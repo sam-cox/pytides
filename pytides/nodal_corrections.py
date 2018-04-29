@@ -84,7 +84,7 @@ def f_K2(a):
 	nu = d2r*a['nu'].value
 	sinsqIcos2nu_mean = np.sin(omega)**2 * (1-3/2.0 * np.sin(i)**2)
 	mean = 0.5023*sinsqIcos2nu_mean + 0.0365
-	return (0.2533*np.sin(I)**4 + 0.0367*np.sin(I)**2 *np.cos(2*nu)+0.0013)**(0.5) / mean
+	return (0.2523*np.sin(I)**4 + 0.0367*np.sin(I)**2 *np.cos(2*nu)+0.0013)**(0.5) / mean
 
 #Schureman equations 206, 207, 195
 def f_M1(a):
