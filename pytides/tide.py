@@ -1,5 +1,4 @@
-
-from collections import OrderedDict, Iterable
+import sys
 from itertools import takewhile, count
 try:
 	from itertools import izip, ifilter
@@ -12,7 +11,15 @@ from scipy.optimize import leastsq, fsolve
 from astro import astro
 import constituent
 
+if sys.version_info <= (3, 10):
+    from collections import OrderedDict, Iterable
+elif sys.version_info > (3, 10):
+    from collections import OrderedDict
+    from collections.abc import Iterable
+
+
 d2r, r2d = np.pi/180.0, 180.0/np.pi
+
 
 class Tide(object):
 	dtype = np.dtype([
